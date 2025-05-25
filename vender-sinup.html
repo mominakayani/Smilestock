@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vendor Signup - SmileStock</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .signup-container {
+      max-width: 400px;
+      margin: 5rem auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .signup-container h2 {
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+    }
+
+    .signup-container p {
+      margin-bottom: 2rem;
+      color: #666;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .signup-btn {
+      width: 100%;
+      background: linear-gradient(to right, #98bcf3, #48bfe3);
+      color: #fff;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 1rem;
+    }
+
+    .message {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    .message.success {
+      color: green;
+    }
+
+    .message.error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="signup-container">
+      <h2>Sign up</h2>
+      <p>Sign up to continue</p>
+      <form id="vendorSignupForm">
+        <div class="form-group">
+          <label for="vendor-name">Name</label>
+          <input type="text" id="vendor-name" name="vendor-name" required>
+        </div>
+        <div class="form-group">
+          <label for="business-email">Email</label>
+          <input type="email" id="business-email" name="business-email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="signup-btn">Sign up</button>
+        <div id="formMessage" class="message"></div>
+        <button id="backToLogin" style="display: none; margin-top: 10px;" onclick="window.location.href='login.html'; return false;">
+          Back to Login
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('vendorSignupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('business-email').value;
+      const messageDiv = document.getElementById('formMessage');
+      const backButton = document.getElementById('backToLogin');
+
+      if (email === "existing@example.com") {
+        messageDiv.textContent = "Email already exists!";
+        messageDiv.className = "message error";
+        backButton.style.display = "none";
+      } else {
+        messageDiv.textContent = "Signup successful!";
+        messageDiv.className = "message success";
+        backButton.style.display = "inline-block";
+      }
+    });
+  </script>
+</body>
+</html>

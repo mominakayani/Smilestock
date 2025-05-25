@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - SmileStock</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .analytics-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 2rem;
+        }
+
+        .analytics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .date-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .date-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #48bfe3;
+            border-radius: 5px;
+            background: white;
+            color: #48bfe3;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .date-btn.active {
+            background: #48bfe3;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #166477;
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            color: #166477;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .top-products {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-list {
+            margin-top: 1rem;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .product-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .product-details h4 {
+            color: #166477;
+            margin: 0;
+        }
+
+        .product-stats {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .product-sales {
+            font-weight: bold;
+            color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <header class="header">
+            <h1>SmileStock</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="cart.html" class="cart-link">
+                    Cart
+                    <span id="cartCount" class="cart-count">0</span>
+                </a>
+                <a href="login.html">Login</a>
+                <a href="vendor-signup.html" class="vendor-link">Vendor Dashboard</a>
+            </nav>
+        </header>
+
+        <div class="analytics-container">
+            <div class="analytics-header">
+                <h2>Analytics Dashboard</h2>
+            </div>
+
+            <div class="date-filter">
+                <button class="date-btn active" data-period="week">Last 7 Days</button>
+                <button class="date-btn" data-period="month">Last 30 Days</button>
+                <button class="date-btn" data-period="year">Last 12 Months</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Sales</div>
+                    <div class="stat-value" id="totalSales">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Orders</div>
+                    <div class="stat-value" id="totalOrders">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average Order Value</div>
+                    <div class="stat-value" id="avgOrderValue">$0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Products</div>
+                    <div class="stat-value" id="totalProducts">0</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Sales Overview</div>
+                </div>
+                <canvas id="salesChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Top Products</div>
+                </div>
+                <div class="product-list" id="topProductsList">
+                    <!-- Top products will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2025 SmileStock. All rights reserved.</p>
+        </footer>
+    </div>
+    <script>
+        let salesChart = null;
+
+        // Check if vendor is logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentVendor = JSON.parse(localStorage.getItem('currentVendor'));
+            if (!currentVendor || currentVendor.type !== 'vendor') {
+                window.location.href = 'vendor-login.html';
+                return;
+            }
+
+            loadAnalytics('week');
+            setupDateFilterListeners();
+        });
+
+        function loadAnalytics(period) {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const vendorEmail = JSON.parse(localStorage.getItem('currentVendor')).email;
+
+            // Filter orders for this vendor
+            const vendorOrders = orders.filter(order => 
+                order.items.some(item => item.vendorEmail === vendorEmail)
+            );
+
+            // Calculate date range
+            const now = new Date();
+            let startDate;
+            switch(period) {
+                case 'week':
+                    startDate = new Date(now.setDate(now.getDate() - 7));
+                    break;
+                case 'month':
+                    startDate = new Date(now.setDate(now.getDate() - 30));
+                    break;
+                case 'year':
+                    startDate = new Date(now.setDate(now.getDate() - 365));
+                    break;
+            }
+
+            // Filter orders within date range
+            const filteredOrders = vendorOrders.filter(order => 
+                new Date(order.date) >= startDate
+            );
+
+            // Calculate statistics
+            const totalSales = filteredOrders.reduce((sum, order) => {
+                const orderTotal = order.items
+                    .filter(item => item.vendorEmail === vendorEmail)
+                    .reduce((itemSum, item) => itemSum + (item.price * item.quantity), 0);
+                return sum + orderTotal;
+            }, 0);
+
+            const totalOrders = filteredOrders.length;
+            const avgOrderValue = totalOrders > 0 ? totalSales / totalOrders : 0;
+            const totalProducts = products.filter(p => p.vendorEmail === vendorEmail).length;
+
+            // Update statistics
+            document.getElementById('totalSales').textContent = `$${totalSales.toFixed(2)}`;
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('avgOrderValue').textContent = `$${avgOrderValue.toFixed(2)}`;
+            document.getElementById('totalProducts').textContent = totalProducts;
+
+            // Update sales chart
+            updateSalesChart(filteredOrders, vendorEmail, period);
+
+            // Update top products
+            updateTopProducts(filteredOrders, vendorEmail);
+        }
+
+        function updateSalesChart(orders, vendorEmail, period) {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            
+            // Prepare data based on period
+            let labels, data;
+            const now = new Date();
+            
+            switch(period) {
+                case 'week':
+                    labels = Array.from({length: 7}, (_, i) => {
+                        const date = new Date(now);
+                        date.setDate(date.getDate() - (6 - i));
+                        return date.toLocaleDateString('en-US', { weekday: 'short' });
+                    });
+                    data = Array(7).fill(0);
+                    orders.forEach(order => {
+                        const orderDate = new Date(order.date);
+                        const dayIndex = 6 - Math.floor((now - orderDate) / (1000 * 60 * 60 * 24));
+                        if (dayIndex >= 0 && dayIndex < 7) {
+                            const orderTotal = order.items
+                                .filter(item => item.vendorEmail === vendorEmail)
+                                .reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                            data[dayIndex] += orderTotal;
+                        }
+                    });
+                    break;
+                case 'month':
+                    labels = Array.from({length: 30}, (_, i) => {
+                        const date = new Date(now);
+                        date.setDate(date.getDate() - (29 - i));
+                        return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+                    });
+                    data = Array(30).fill(0);
+                    orders.forEach(order => {
+                        const orderDate = new Date(order.date);
+                        const dayIndex = 29 - Math.floor((now - orderDate) / (1000 * 60 * 60 * 24));
+                        if (dayIndex >= 0 && dayIndex < 30) {
+                            const orderTotal = order.items
+                                .filter(item => item.vendorEmail === vendorEmail)
+                                .reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                            data[dayIndex] += orderTotal;
+                        }
+                    });
+                    break;
+                case 'year':
+                    labels = Array.from({length: 12}, (_, i) => {
+                        const date = new Date(now);
+                        date.setMonth(date.getMonth() - (11 - i));
+                        return date.toLocaleDateString('en-US', { month: 'short' });
+                    });
+                    data = Array(12).fill(0);
+                    orders.forEach(order => {
+                        const orderDate = new Date(order.date);
+                        const monthIndex = 11 - (now.getMonth() - orderDate.getMonth() + 12) % 12;
+                        if (monthIndex >= 0 && monthIndex < 12) {
+                            const orderTotal = order.items
+                                .filter(item => item.vendorEmail === vendorEmail)
+                                .reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                            data[monthIndex] += orderTotal;
+                        }
+                    });
+                    break;
+            }
+
+            // Destroy existing chart if it exists
+            if (salesChart) {
+                salesChart.destroy();
+            }
+
+            // Create new chart
+            salesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Sales',
+                        data: data,
+                        borderColor: '#48bfe3',
+                        backgroundColor: 'rgba(72, 191, 227, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => `$${value}`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTopProducts(orders, vendorEmail) {
+            // Calculate product sales
+            const productSales = {};
+            orders.forEach(order => {
+                order.items
+                    .filter(item => item.vendorEmail === vendorEmail)
+                    .forEach(item => {
+                        if (!productSales[item.id]) {
+                            productSales[item.id] = {
+                                name: item.name,
+                                image: item.image,
+                                totalSales: 0,
+                                totalQuantity: 0
+                            };
+                        }
+                        productSales[item.id].totalSales += item.price * item.quantity;
+                        productSales[item.id].totalQuantity += item.quantity;
+                    });
+            });
+
+            // Sort products by sales
+            const topProducts = Object.entries(productSales)
+                .sort(([, a], [, b]) => b.totalSales - a.totalSales)
+                .slice(0, 5);
+
+            // Update top products list
+            const topProductsList = document.getElementById('topProductsList');
+            topProductsList.innerHTML = topProducts.map(([id, product]) => `
+                <div class="product-item">
+                    <div class="product-info">
+                        <img src="${product.image}" alt="${product.name}" class="product-image">
+                        <div class="product-details">
+                            <h4>${product.name}</h4>
+                            <div class="product-stats">
+                                Quantity Sold: ${product.totalQuantity}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-sales">
+                        $${product.totalSales.toFixed(2)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupDateFilterListeners() {
+            const dateButtons = document.querySelectorAll('.date-btn');
+            dateButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    dateButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    loadAnalytics(button.dataset.period);
+                });
+            });
+        }
+    </script>
+</body>
+</html> 

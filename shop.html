@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - SmileStock</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .shop-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            font-size: 1.2rem;
+            color: #166477;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            color: #2ecc71;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .view-details {
+            display: inline-block;
+            background: linear-gradient(to right, #98bcf3, #48bfe3);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.2s ease;
+        }
+
+        .view-details:hover {
+            transform: translateY(-2px);
+        }
+
+        .shop-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .shop-header h1 {
+            color: #166477;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .shop-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: #48bfe3;
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background: #48bfe3;
+            color: white;
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .cart-link {
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #48bfe3;
+            box-shadow: 0 0 0 3px rgba(72, 191, 227, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <header class="header">
+            <h1>SmileStock</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="cart.html" class="cart-link">
+                    Cart
+                    <span id="cartCount" class="cart-count">0</span>
+                </a>
+                <a href="login.html">Login</a>
+            </nav>
+        </header>
+
+        <div class="shop-container">
+            <div class="shop-header">
+                <h1>Dental Products</h1>
+                <p>High-quality dental equipment and supplies for professionals</p>
+            </div>
+
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search products..." class="search-input">
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-category="all">All Products</button>
+                <button class="filter-btn" data-category="equipment">Equipment</button>
+                <button class="filter-btn" data-category="tools">Tools</button>
+                <button class="filter-btn" data-category="supplies">Supplies</button>
+            </div>
+
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded dynamically -->
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2025 SmileStock. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Product data with categories
+        const products = [
+            {
+                id: 1,
+                title: "High-Speed Dental Drill",
+                price: 299.00,
+                description: "Professional high-speed dental drill with LED light and water spray.",
+                image: "images/drill.jpg",
+                category: "tools"
+            },
+            {
+                id: 2,
+                title: "Comfort Dental Chair",
+                price: 899.00,
+                description: "Ergonomic dental chair with adjustable positions and memory foam.",
+                image: "images/chair5.png",
+                category: "equipment"
+            },
+            {
+                id: 3,
+                title: "Ultrasonic Scaler",
+                price: 150.00,
+                description: "Professional ultrasonic scaler for deep cleaning and plaque removal.",
+                image: "images/scalar.jpg",
+                category: "tools"
+            },
+            {
+                id: 4,
+                title: "Digital X-Ray System",
+                price: 1499.00,
+                description: "Advanced digital X-ray system with instant imaging and low radiation.",
+                image: "images/x.avif",
+                category: "equipment"
+            },
+            {
+                id: 5,
+                title: "LED Dental Light",
+                price: 450.00,
+                description: "Bright LED dental light with adjustable intensity and color temperature.",
+                image: "images/light.jpg",
+                category: "equipment"
+            },
+            {
+                id: 6,
+                title: "Dental Suction Unit",
+                price: 350.00,
+                description: "High-performance dental suction unit with quiet operation.",
+                image: "images/suction.jpg",
+                category: "equipment"
+            },
+            {
+                id: 7,
+                title: "Dental Mirror Set",
+                price: 45.00,
+                description: "Set of 5 dental mirrors with different sizes and angles.",
+                image: "images/mirror.webp",
+                category: "tools"
+            },
+            {
+                id: 8,
+                title: "Dental Explorer Set",
+                price: 35.00,
+                description: "Professional set of dental explorers for cavity detection.",
+                image: "images/explorer.avif",
+                category: "tools"
+            },
+            {
+                id: 9,
+                title: "Dental Floss",
+                price: 12.00,
+                description: "Premium dental floss, 100 yards per roll.",
+                image: "images/floss.jpg",
+                category: "supplies"
+            },
+            {
+                id: 10,
+                title: "Dental Gloves",
+                price: 25.00,
+                description: "Box of 100 latex-free dental examination gloves.",
+                image: "images/gloves.webp",
+                category: "supplies"
+            }
+        ];
+
+        // Function to create product card HTML
+        function createProductCard(product) {
+            return `
+                <div class="product-card" onclick="window.location.href='product-detail.html?id=${product.id}'">
+                    <img src="${product.image}" alt="${product.title}" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">${product.title}</h3>
+                        <p class="product-price">$${product.price.toFixed(2)}</p>
+                        <p class="product-description">${product.description}</p>
+                        <a href="product-detail.html?id=${product.id}" class="view-details">View Details</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to filter and display products
+        function filterProducts(category, searchTerm = '') {
+            const productsGrid = document.getElementById('productsGrid');
+            let filteredProducts = category === 'all' 
+                ? products 
+                : products.filter(product => product.category === category);
+
+            // Apply search filter if search term exists
+            if (searchTerm) {
+                searchTerm = searchTerm.toLowerCase();
+                filteredProducts = filteredProducts.filter(product => 
+                    product.title.toLowerCase().includes(searchTerm) ||
+                    product.description.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (filteredProducts.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="no-products">
+                        <h3>No products found</h3>
+                        <p>Please try different search terms or browse other categories.</p>
+                    </div>
+                `;
+            } else {
+                productsGrid.innerHTML = filteredProducts.map(createProductCard).join('');
+            }
+        }
+
+        // Add search functionality
+        const searchInput = document.getElementById('searchInput');
+        let currentCategory = 'all';
+
+        searchInput.addEventListener('input', (e) => {
+            filterProducts(currentCategory, e.target.value);
+        });
+
+        // Modify filter button click handler
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                e.target.classList.add('active');
+                
+                // Update current category and filter products
+                currentCategory = e.target.dataset.category;
+                filterProducts(currentCategory, searchInput.value);
+            });
+        });
+
+        // Initial load of all products
+        filterProducts('all');
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartCount = document.getElementById('cartCount');
+            cartCount.textContent = cart.length;
+        }
+
+        // Call this when page loads
+        window.onload = function() {
+            updateCartCount();
+        }
+    </script>
+</body>
+</html>

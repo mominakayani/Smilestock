@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmileStock - Dental Store</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Add these styles to your existing styles */
+    .cart-link {
+      position: relative;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #ff6b6b;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .product {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .product:hover {
+      transform: translateY(-5px);
+    }
+
+    .product img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+
+    .product h3 {
+      color: #166477;
+      margin-bottom: 0.5rem;
+    }
+
+    .product p {
+      color: #2ecc71;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .buy-now-btn {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      background: linear-gradient(to right, #98bcf3, #48bfe3);
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      transition: transform 0.2s ease;
+    }
+
+    .buy-now-btn:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <header class="header">
+      <h1>SmileStock</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="cart.html" class="cart-link">
+          Cart
+          <span id="cartCount" class="cart-count">0</span>
+        </a>
+        <a href="login.html">Login</a>
+        <a href="vendor-signup.html" class="vendor-link">Vendor Dashboard</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h2>Your Trusted Dental Equipment Partner</h2>
+      <p>Shop high-quality dental tools and supplies.</p>
+      <a href="shop.html" class="cta-button">Start Shopping</a>
+    </section>
+
+    <section class="featured-products">
+      <h2>Featured Products</h2>
+      <div class="product-grid">
+        <div class="product">
+          <img src="images/drill.jpg" alt="Dental Drill">
+          <h3>High-Speed Drill</h3>
+          <p>$299.00</p>
+          <a href="product-detail.html?id=1" class="buy-now-btn">Buy Now</a>
+        </div>
+        <div class="product">
+          <img src="images/chair5.png" alt="Dental Chair">
+          <h3>Comfort Dental Chair</h3>
+          <p>$899.00</p>
+          <a href="product-detail.html?id=2" class="buy-now-btn">Buy Now</a>
+        </div>
+        <div class="product">
+          <img src="images/scalar.jpg" alt="Ultrasonic Scaler">
+          <h3>Ultrasonic Scaler</h3>
+          <p>$150.00</p>
+          <a href="product-detail.html?id=3" class="buy-now-btn">Buy Now</a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>&copy; 2025 SmileStock. All rights reserved.</p>
+    </footer>
+  </div>
+  <script>
+    // Add this to your existing script
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartCount = document.getElementById('cartCount');
+      cartCount.textContent = cart.length;
+    }
+
+    // Call this when page loads
+    window.onload = function() {
+      updateCartCount();
+      // ... rest of your existing onload code ...
+    }
+  </script>
+</body>
+</html>

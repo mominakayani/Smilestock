@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders - SmileStock</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .orders-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 2rem;
+        }
+
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #48bfe3;
+            border-radius: 5px;
+            background: white;
+            color: #48bfe3;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn.active {
+            background: #48bfe3;
+            color: white;
+        }
+
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .order-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-id {
+            color: #166477;
+            font-weight: bold;
+        }
+
+        .order-date {
+            color: #666;
+        }
+
+        .order-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #ffeaa7;
+            color: #b7791f;
+        }
+
+        .status-processing {
+            background: #81ecec;
+            color: #00b894;
+        }
+
+        .status-shipped {
+            background: #74b9ff;
+            color: #0984e3;
+        }
+
+        .status-delivered {
+            background: #55efc4;
+            color: #00b894;
+        }
+
+        .order-details {
+            margin-bottom: 1rem;
+        }
+
+        .customer-info {
+            margin-bottom: 1rem;
+            color: #666;
+        }
+
+        .products-list {
+            margin-bottom: 1rem;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .product-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .order-total {
+            text-align: right;
+            font-weight: bold;
+            color: #166477;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            font-weight: bold;
+        }
+
+        .update-status-btn {
+            background: #48bfe3;
+            color: white;
+        }
+
+        .view-details-btn {
+            background: #a8e6cf;
+            color: #166477;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .status-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-option {
+            padding: 1rem;
+            border: 2px solid #48bfe3;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .status-option:hover {
+            background: #48bfe3;
+            color: white;
+        }
+
+        .status-option.active {
+            background: #48bfe3;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <header class="header">
+            <h1>SmileStock</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="cart.html" class="cart-link">
+                    Cart
+                    <span id="cartCount" class="cart-count">0</span>
+                </a>
+                <a href="login.html">Login</a>
+                <a href="vendor-signup.html" class="vendor-link">Vendor Dashboard</a>
+            </nav>
+        </header>
+
+        <div class="orders-container">
+            <div class="orders-header">
+                <h2>Manage Orders</h2>
+            </div>
+
+            <div class="filter-section">
+                <button class="filter-btn active" data-status="all">All Orders</button>
+                <button class="filter-btn" data-status="pending">Pending</button>
+                <button class="filter-btn" data-status="processing">Processing</button>
+                <button class="filter-btn" data-status="shipped">Shipped</button>
+                <button class="filter-btn" data-status="delivered">Delivered</button>
+            </div>
+
+            <div id="ordersList" class="orders-list">
+                <!-- Orders will be dynamically loaded here -->
+            </div>
+        </div>
+
+        <!-- Update Status Modal -->
+        <div id="statusModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Update Order Status</h3>
+                    <button onclick="closeModal()" class="close-btn">&times;</button>
+                </div>
+                <div class="status-options">
+                    <div class="status-option" data-status="pending">Pending</div>
+                    <div class="status-option" data-status="processing">Processing</div>
+                    <div class="status-option" data-status="shipped">Shipped</div>
+                    <div class="status-option" data-status="delivered">Delivered</div>
+                </div>
+                <button onclick="updateOrderStatus()" class="action-btn update-status-btn">Update Status</button>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2025 SmileStock. All rights reserved.</p>
+        </footer>
+    </div>
+    <script>
+        let currentOrderId = null;
+
+        // Check if vendor is logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentVendor = JSON.parse(localStorage.getItem('currentVendor'));
+            if (!currentVendor || currentVendor.type !== 'vendor') {
+                window.location.href = 'vendor-login.html';
+                return;
+            }
+
+            loadOrders();
+            setupFilterListeners();
+        });
+
+        function loadOrders(status = 'all') {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const vendorOrders = orders.filter(order => 
+                order.items.some(item => item.vendorEmail === JSON.parse(localStorage.getItem('currentVendor')).email)
+            );
+
+            const filteredOrders = status === 'all' 
+                ? vendorOrders 
+                : vendorOrders.filter(order => order.status === status);
+
+            const ordersList = document.getElementById('ordersList');
+            ordersList.innerHTML = filteredOrders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">Order #${order.id}</span>
+                        <span class="order-date">${new Date(order.date).toLocaleDateString()}</span>
+                        <span class="order-status status-${order.status}">${order.status}</span>
+                    </div>
+                    <div class="order-details">
+                        <div class="customer-info">
+                            <p>Customer: ${order.customerName}</p>
+                            <p>Email: ${order.customerEmail}</p>
+                            <p>Shipping Address: ${order.shippingAddress}</p>
+                        </div>
+                        <div class="products-list">
+                            ${order.items
+                                .filter(item => item.vendorEmail === JSON.parse(localStorage.getItem('currentVendor')).email)
+                                .map(item => `
+                                    <div class="product-item">
+                                        <div class="product-info">
+                                            <img src="${item.image}" alt="${item.name}" class="product-image">
+                                            <div>
+                                                <p>${item.name}</p>
+                                                <p>Quantity: ${item.quantity}</p>
+                                            </div>
+                                        </div>
+                                        <p>$${(item.price * item.quantity).toFixed(2)}</p>
+                                    </div>
+                                `).join('')}
+                        </div>
+                        <div class="order-total">
+                            Total: $${order.items
+                                .filter(item => item.vendorEmail === JSON.parse(localStorage.getItem('currentVendor')).email)
+                                .reduce((sum, item) => sum + (item.price * item.quantity), 0)
+                                .toFixed(2)}
+                        </div>
+                    </div>
+                    <div class="order-actions">
+                        <button onclick="showStatusModal('${order.id}')" class="action-btn update-status-btn">Update Status</button>
+                        <button onclick="viewOrderDetails('${order.id}')" class="action-btn view-details-btn">View Details</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupFilterListeners() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    loadOrders(button.dataset.status);
+                });
+            });
+        }
+
+        function showStatusModal(orderId) {
+            currentOrderId = orderId;
+            const order = JSON.parse(localStorage.getItem('orders')).find(o => o.id === orderId);
+            
+            // Set active status
+            document.querySelectorAll('.status-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.status === order.status);
+            });
+
+            document.getElementById('statusModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('statusModal').classList.remove('active');
+        }
+
+        function updateOrderStatus() {
+            const selectedStatus = document.querySelector('.status-option.active').dataset.status;
+            const orders = JSON.parse(localStorage.getItem('orders'));
+            const orderIndex = orders.findIndex(o => o.id === currentOrderId);
+            
+            if (orderIndex !== -1) {
+                orders[orderIndex].status = selectedStatus;
+                localStorage.setItem('orders', JSON.stringify(orders));
+                closeModal();
+                loadOrders(document.querySelector('.filter-btn.active').dataset.status);
+            }
+        }
+
+        function viewOrderDetails(orderId) {
+            // Implement order details view functionality
+            alert('Order details view will be implemented here');
+        }
+
+        // Status option selection
+        document.querySelectorAll('.status-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.status-option').forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html> 

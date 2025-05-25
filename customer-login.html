@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login - SmileStock</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .login-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .login-tab.active {
+            color: #35c9d2;
+            border-bottom: 2px solid #35c9d2;
+            margin-bottom: -2px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(to right, #98bcf3, #48bfe3);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <header class="header">
+            <h1>SmileStock</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="cart.html">Cart</a>
+                <a href="login.html">Login</a>
+            </nav>
+        </header>
+
+        <div class="login-container">
+            <div class="login-tabs">
+                <div class="login-tab active" onclick="switchTab('login')">Login</div>
+                <div class="login-tab" onclick="switchTab('signup')">Sign Up</div>
+            </div>
+
+            <div id="loginForm" class="form-section active">
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Login</button>
+                    <div id="loginError" class="error-message"></div>
+                </form>
+            </div>
+
+            <div id="signupForm" class="form-section">
+                <form onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input type="text" id="signupName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email</label>
+                        <input type="email" id="signupEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Sign Up</button>
+                    <div id="signupError" class="error-message"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Update active tab
+            document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.login-tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+
+            // Show active form
+            document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+            document.getElementById(`${tab}Form`).classList.add('active');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorElement = document.getElementById('loginError');
+
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('customers')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                // Store logged in user
+                localStorage.setItem('currentCustomer', JSON.stringify(user));
+                
+                // Check if coming from checkout
+                const urlParams = new URLSearchParams(window.location.search);
+                const fromCheckout = urlParams.get('from') === 'checkout';
+                
+                // Redirect based on source
+                if (fromCheckout) {
+                    window.location.href = 'checkout.html';
+                } else {
+                    window.location.href = 'shop.html';
+                }
+            } else {
+                errorElement.textContent = 'Invalid email or password';
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorElement = document.getElementById('signupError');
+
+            if (password !== confirmPassword) {
+                errorElement.textContent = 'Passwords do not match';
+                errorElement.style.display = 'block';
+                return;
+            }
+
+            // Get existing users
+            const users = JSON.parse(localStorage.getItem('customers')) || [];
+
+            // Check if email already exists
+            if (users.some(u => u.email === email)) {
+                errorElement.textContent = 'Email already registered';
+                errorElement.style.display = 'block';
+                return;
+            }
+
+            // Add new user
+            users.push({
+                name,
+                email,
+                password
+            });
+
+            // Save users
+            localStorage.setItem('customers', JSON.stringify(users));
+
+            // Auto login
+            localStorage.setItem('currentCustomer', JSON.stringify({ name, email }));
+            
+            // Check if coming from checkout
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromCheckout = urlParams.get('from') === 'checkout';
+            
+            // Redirect based on source
+            if (fromCheckout) {
+                window.location.href = 'checkout.html';
+            } else {
+                window.location.href = 'shop.html';
+            }
+        }
+    </script>
+</body>
+</html> 

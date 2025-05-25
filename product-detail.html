@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - SmileStock</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .product-detail-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .product-detail {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-images {
+            position: relative;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .thumbnail:hover {
+            opacity: 0.8;
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-title {
+            font-size: 2rem;
+            color: #166477;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            font-size: 1.8rem;
+            color: #2ecc71;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .product-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .product-features {
+            margin-bottom: 2rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            color: #2ecc71;
+            position: absolute;
+            left: 0;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .quantity-btn {
+            background: #f0f0f0;
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .quantity-input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            margin: 0 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .add-to-cart {
+            background: linear-gradient(to right, #98bcf3, #48bfe3);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            flex: 1;
+            transition: transform 0.2s ease;
+        }
+
+        .add-to-cart:hover {
+            transform: translateY(-2px);
+        }
+
+        .continue-shopping {
+            background: #f0f0f0;
+            color: #333;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .continue-shopping:hover {
+            background: #e0e0e0;
+        }
+
+        .specifications {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .specifications h3 {
+            color: #166477;
+            margin-bottom: 1rem;
+        }
+
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .specs-table td {
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .specs-table td:first-child {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .success-message {
+            display: none;
+            background: #2ecc71;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .success-actions {
+            display: none;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .success-actions a {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .success-actions a:hover {
+            transform: translateY(-2px);
+        }
+
+        .view-cart-btn {
+            background: linear-gradient(to right, #98bcf3, #48bfe3);
+            color: white;
+        }
+
+        .continue-shopping-btn {
+            background: #f0f0f0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <header class="header">
+            <h1>SmileStock</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="cart.html">Cart</a>
+                <a href="login.html">Login</a>
+            </nav>
+        </header>
+
+        <div class="product-detail-container">
+            <div class="product-detail">
+                <div class="product-images">
+                    <img src="" alt="" class="main-image" id="mainImage">
+                    <div class="thumbnail-grid">
+                        <img src="" alt="" class="thumbnail" onclick="changeImage(this.src)">
+                        <img src="" alt="" class="thumbnail" onclick="changeImage(this.src)">
+                        <img src="" alt="" class="thumbnail" onclick="changeImage(this.src)">
+                        <img src="" alt="" class="thumbnail" onclick="changeImage(this.src)">
+                    </div>
+                </div>
+
+                <div class="product-info">
+                    <h1 class="product-title" id="productTitle"></h1>
+                    <p class="product-price" id="productPrice"></p>
+                    <p class="product-description" id="productDescription"></p>
+
+                    <div class="product-features">
+                        <h3>Key Features</h3>
+                        <ul class="feature-list" id="featureList">
+                        </ul>
+                    </div>
+
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                        <input type="number" class="quantity-input" id="quantity" value="1" min="1" readonly>
+                        <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="add-to-cart" onclick="addToCart()">Add to Cart</button>
+                        <a href="shop.html" class="continue-shopping">Continue Shopping</a>
+                    </div>
+
+                    <div class="success-message" id="successMessage">
+                        Product added to cart successfully!
+                    </div>
+                    <div class="success-actions" id="successActions">
+                        <a href="cart.html" class="view-cart-btn">View Cart</a>
+                        <a href="shop.html" class="continue-shopping-btn">Continue Shopping</a>
+                    </div>
+
+                    <div class="specifications">
+                        <h3>Specifications</h3>
+                        <table class="specs-table" id="specsTable">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2025 SmileStock. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Product data (in a real application, this would come from a database)
+        const products = {
+            1: {
+                title: "High-Speed Dental Drill",
+                price: 299.00,
+                description: "Professional high-speed dental drill with LED light and water spray. Perfect for precise dental procedures with minimal vibration and noise.",
+                features: [
+                    "High-speed operation up to 400,000 RPM",
+                    "Built-in LED light for better visibility",
+                    "Water spray system for cooling",
+                    "Ergonomic design for comfort",
+                    "Easy sterilization process"
+                ],
+                specifications: {
+                    "Power": "100W",
+                    "Speed": "400,000 RPM",
+                    "Weight": "120g",
+                    "Dimensions": "180 x 25 x 25 mm",
+                    "Warranty": "2 years"
+                },
+                images: [
+                    "images/drill.jpg",
+                    "images/drill2.jpg",
+                    "images/drill3.webp",
+                    "images/drill4.jpg"
+                ]
+            },
+            2: {
+                title: "Comfort Dental Chair",
+                price: 899.00,
+                description: "Ergonomic dental chair with adjustable positions and memory foam. Designed for maximum comfort for both patients and dental professionals.",
+                features: [
+                    "Multiple adjustable positions",
+                    "Memory foam cushioning",
+                    "Built-in headrest",
+                    "Easy-to-clean materials",
+                    "Smooth hydraulic system"
+                ],
+                specifications: {
+                    "Weight Capacity": "300 lbs",
+                    "Material": "Medical-grade vinyl",
+                    "Dimensions": "180 x 80 x 120 cm",
+                    "Power": "110V",
+                    "Warranty": "3 years"
+                },
+                images: [
+                    "images/chair5.png",
+                    "images/chair2.webp",
+                    "images/chair.jpg",
+                    "images/chair4.jpg"
+                ]
+            },
+            3: {
+                title: "Ultrasonic Scaler",
+                price: 150.00,
+                description: "Professional ultrasonic scaler for deep cleaning and plaque removal. Features advanced technology for efficient dental cleaning.",
+                features: [
+                    "Variable power settings",
+                    "Multiple tip options",
+                    "Water flow control",
+                    "Anti-vibration technology",
+                    "Easy sterilization"
+                ],
+                specifications: {
+                    "Frequency": "25-30 kHz",
+                    "Power": "45W",
+                    "Weight": "250g",
+                    "Dimensions": "200 x 50 x 50 mm",
+                    "Warranty": "1 year"
+                },
+                images: [
+                    "images/scalar.jpg",
+                    
+                ]
+            },
+            4: {
+                title: "Digital X-Ray System",
+                price: 1499.00,
+                description: "Advanced digital X-ray system with instant imaging and low radiation. Perfect for modern dental practices.",
+                features: [
+                    "Instant digital imaging",
+                    "Low radiation exposure",
+                    "High-resolution display",
+                    "Easy image storage",
+                    "Compatible with dental software"
+                ],
+                specifications: {
+                    "Resolution": "16-bit",
+                    "Sensor Size": "30 x 40 mm",
+                    "Exposure Time": "0.1-0.5s",
+                    "Interface": "USB 3.0",
+                    "Warranty": "2 years"
+                },
+                images: [
+                    "images/x.avif",
+                    "images/x2.png",
+                    "images/x3.jpg",
+                    "images/x4.png"
+                ]
+            },
+            5: {
+                title: "LED Dental Light",
+                price: 450.00,
+                description: "Bright LED dental light with adjustable intensity and color temperature. Provides optimal illumination for dental procedures.",
+                features: [
+                    "Adjustable brightness",
+                    "Color temperature control",
+                    "Shadow-free illumination",
+                    "Energy efficient",
+                    "Long LED lifespan"
+                ],
+                specifications: {
+                    "Power": "50W",
+                    "Brightness": "40,000 lux",
+                    "Color Temperature": "4000K-6500K",
+                    "Dimensions": "45 x 45 x 15 cm",
+                    "Warranty": "2 years"
+                },
+                images: [
+                    "images/light.jpg",
+                    "images/light-2.jpg",
+                    "images/light-3.jpg",
+                    "images/light-4.jpg"
+                ]
+            },
+            6: {
+                title: "Dental Suction Unit",
+                price: 350.00,
+                description: "High-performance dental suction unit with quiet operation. Essential for maintaining a clean and dry working environment.",
+                features: [
+                    "Quiet operation",
+                    "Adjustable suction power",
+                    "Easy maintenance",
+                    "Anti-clog system",
+                    "Multiple tip options"
+                ],
+                specifications: {
+                    "Power": "1/3 HP",
+                    "Noise Level": "< 60 dB",
+                    "Suction Power": "500 mmHg",
+                    "Dimensions": "30 x 25 x 45 cm",
+                    "Warranty": "1 year"
+                },
+                images: [
+                    "images/suction.jpg",
+                    "images/s2.webp",
+                    "images/s3.jpg",
+                    "images/s4.avif",
+                ]
+            },
+            7: {
+                title: "Dental Mirror Set",
+                price: 45.00,
+                description: "Professional set of dental mirrors with different sizes and angles. Perfect for comprehensive dental examinations.",
+                features: [
+                    "5 different mirror sizes",
+                    "Multiple angles",
+                    "Anti-fog coating",
+                    "Stainless steel construction",
+                    "Autoclavable"
+                ],
+                specifications: {
+                    "Material": "Stainless Steel",
+                    "Mirror Sizes": "3mm to 8mm",
+                    "Handle Length": "180mm",
+                    "Set Contents": "5 mirrors",
+                    "Warranty": "6 months"
+                },
+                images: [
+                    "images/mirror.webp",
+                    "images/mirror2.jpg",
+                    "images/mirror3.jpg",
+                    "images/mirror4.jpg"
+                ]
+            },
+            8: {
+                title: "Dental Explorer Set",
+                price: 35.00,
+                description: "Professional set of dental explorers for cavity detection. Essential tools for thorough dental examinations.",
+                features: [
+                    "Multiple tip designs",
+                    "Ergonomic handles",
+                    "Stainless steel construction",
+                    "Precision tips",
+                    "Autoclavable"
+                ],
+                specifications: {
+                    "Material": "Stainless Steel",
+                    "Handle Length": "160mm",
+                    "Set Contents": "4 explorers",
+                    "Tip Types": "Shepherd's hook, Pigtail, Orban",
+                    "Warranty": "6 months"
+                },
+                images: [
+                    "images/explorer.avif",
+                    "images/e2.avif",
+                    "images/e3.jpg",
+                    "images/e4.jpeg"
+                ]
+            },
+            9: {
+                title: "Dental Floss",
+                price: 12.00,
+                description: "Premium dental floss for effective interdental cleaning. Gentle yet effective for daily use.",
+                features: [
+                    "Waxed for easy gliding",
+                    "Strong and shred-resistant",
+                    "Mint flavor",
+                    "100 yards per roll",
+                    "PTFE material"
+                ],
+                specifications: {
+                    "Length": "100 yards",
+                    "Material": "PTFE",
+                    "Flavor": "Mint",
+                    "Pack Size": "6 rolls",
+                    "Shelf Life": "2 years"
+                },
+                images: [
+                    "images/floss.jpg",
+                    "images/f2.jpg",
+                    "images/f3.jpg",
+                    "images/f4.webp"
+                ]
+            },
+            10: {
+                title: "Dental Gloves",
+                price: 25.00,
+                description: "Box of 100 latex-free dental examination gloves. Comfortable and safe for both patients and professionals.",
+                features: [
+                    "Latex-free material",
+                    "Powder-free",
+                    "Ambidextrous design",
+                    "Textured fingertips",
+                    "Comfortable fit"
+                ],
+                specifications: {
+                    "Material": "Nitrile",
+                    "Size": "Medium",
+                    "Quantity": "100 gloves",
+                    "Thickness": "0.08mm",
+                    "Box Contents": "100 pairs"
+                },
+                images: [
+                    "images/gloves.webp",
+                    "images/g2.jpg",
+                    "images/g3.avif",
+                    "images/g4.jpg"
+                ]
+            }
+        };
+
+        // Get product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        // Load product data
+        function loadProduct() {
+            const product = products[productId];
+            if (!product) {
+                window.location.href = 'shop.html';
+                return;
+            }
+
+            document.title = `${product.title} - SmileStock`;
+            document.getElementById('productTitle').textContent = product.title;
+            document.getElementById('productPrice').textContent = `$${product.price.toFixed(2)}`;
+            document.getElementById('productDescription').textContent = product.description;
+
+            // Load features
+            const featureList = document.getElementById('featureList');
+            featureList.innerHTML = product.features.map(feature => 
+                `<li>${feature}</li>`
+            ).join('');
+
+            // Load specifications
+            const specsTable = document.getElementById('specsTable');
+            specsTable.innerHTML = Object.entries(product.specifications).map(([key, value]) => 
+                `<tr><td>${key}</td><td>${value}</td></tr>`
+            ).join('');
+
+            // Load images
+            const mainImage = document.getElementById('mainImage');
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            mainImage.src = product.images[0];
+            mainImage.alt = product.title;
+            product.images.forEach((src, index) => {
+                if (thumbnails[index]) {
+                    thumbnails[index].src = src;
+                    thumbnails[index].alt = `${product.title} - View ${index + 1}`;
+                }
+            });
+        }
+
+        // Change main image
+        function changeImage(src) {
+            document.getElementById('mainImage').src = src;
+        }
+
+        // Quantity controls
+        function increaseQuantity() {
+            const input = document.getElementById('quantity');
+            input.value = parseInt(input.value) + 1;
+        }
+
+        function decreaseQuantity() {
+            const input = document.getElementById('quantity');
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
+            }
+        }
+
+        // Add to cart functionality
+        function addToCart() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const product = products[productId];
+            
+            // Get existing cart or initialize new one
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            // Add item to cart
+            cart.push({
+                id: productId,
+                title: product.title,
+                price: product.price,
+                quantity: quantity,
+                image: product.images[0]
+            });
+            
+            // Save cart
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Show success message and actions
+            const successMessage = document.getElementById('successMessage');
+            const successActions = document.getElementById('successActions');
+            successMessage.style.display = 'block';
+            successActions.style.display = 'block';
+
+            // Update cart count in header
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                cartCount.textContent = cart.length;
+            }
+        }
+
+        // Load product when page loads
+        window.onload = loadProduct;
+    </script>
+</body>
+</html> 

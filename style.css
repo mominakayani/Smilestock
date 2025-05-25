@@ -1,0 +1,191 @@
+/* General Body Styles with Background Image */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url('images/dental-center.jpg') no-repeat center center fixed;
+    background-size: cover;
+  }
+  
+  /* Overlay to make content readable */
+  
+  
+  /* Header Styling */
+  .header {
+    background: rgba(53, 202, 210, 0.7); /* semi-transparent blue */
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    align-items: center;
+    border-radius: 0 0 10px 10px;
+  }
+  
+  
+  
+  .header nav a {
+    color: #fff;
+    margin-left: 1rem;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  /* Hero Section */
+  .hero {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  
+  .cta-button {
+    background: #62beae;
+    color: #fff;
+    padding: 0.7rem 1.5rem;  /* smaller padding */
+    border: none;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 1.5rem; /* pushes it slightly down */
+    font-size: 0.95rem; /* optional: slightly smaller font */
+  }
+  
+  
+  /* Featured Products Section */
+  .featured-products {
+    padding: 2rem;
+    text-align: center;
+    background-color: rgba(53, 202, 210, 0.7);
+    border-radius: 10px;
+    margin: 2rem;
+  }
+  
+  .product-grid {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .product {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    width: 250px;
+  }
+  
+  .product img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+  
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 1rem;
+    color: #555;
+  }
+  /* Login Page */
+  .login-options {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  
+  .login-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+  
+  .login-box {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .login-box h3 {
+    margin-bottom: 1rem;
+  }
+  
+  .login-box p {
+    margin-bottom: 1.5rem;
+  }
+  
+  .cta-button.secondary {
+    background-color: #98bcf3;
+    margin-left: 0.5rem;
+  }
+  .cta-button {
+    background: linear-gradient(to right, #98bcf3, #48bfe3);
+    color: #fff;
+    padding: 0.7rem 2rem;
+    border: none;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    display: block;
+    margin: 1.5rem auto 0 auto; /* centers the button */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .cta-button:hover {
+    background: linear-gradient(to right, #98bcf3, #38a2c2);
+    transform: translateY(-2px);
+  }
+  
+  
+  .login-form {
+    background: rgba(255, 255, 255, 0.85);
+    max-width: 500px;
+    margin: 3rem auto;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .login-form h2 {
+    text-align: center;
+    color: #166477;
+    margin-bottom: 1.5rem;
+  }
+  
+  .signup-form .form-group {
+    margin-bottom: 3.5rem;
+  }
+  
+  .signup-form label {
+    display: block;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    color: #333;
+  }
+  
+  .signup-form input {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: rgba(53, 202, 210, 0.7);
+    
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url('images/dental-center.jpg') no-repeat center center fixed;
+    background-size: cover;
+  }
+  
+  
+  
+  
